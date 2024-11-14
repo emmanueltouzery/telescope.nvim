@@ -147,6 +147,10 @@ local function list_or_jump(action, title, params, opts)
 
     flattened_results = apply_action_handler(action, flattened_results, opts)
 
+    if opts.post_process_results then
+      flattened_results = opts.post_process_results(flattened_results)
+    end
+
     local offset_encoding = vim.lsp.get_client_by_id(ctx.client_id).offset_encoding
 
     if vim.tbl_isempty(flattened_results) then

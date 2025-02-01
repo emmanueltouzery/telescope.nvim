@@ -333,7 +333,19 @@ do
         )
 
         if hl_group then
-          return display, { { { 0, #icon }, hl_group } }
+          -- The pattern () is a special feature in Lua patterns that captures the position of the match.
+          local colons_gmatch = string.gmatch(display, "():")
+          local first_colon_idx = colons_gmatch()
+          local second_colon_idx = colons_gmatch()
+          local third_colon_idx = colons_gmatch()
+          local path = string.sub(display, #icon+2, first_colon_idx)
+          local path_last_slash_idx = string.find(path, "/[^/]*$") or 0
+          return display, {
+            { { 0, #icon }, hl_group },
+            { { #icon + 1, #icon + 1 + path_last_slash_idx}, "TelescopeResultsComment"},
+            { { first_colon_idx, second_colon_idx }, "TelescopeResultsSpecialComment"},
+            { { second_colon_idx, third_colon_idx }, "TelescopeResultsComment"},
+          }
         else
           return display
         end
@@ -469,7 +481,19 @@ function make_entry.gen_from_quickfix(opts)
       display_string = display_string .. ":" .. text
     end
 
-    return display_string
+    -- The pattern () is a special feature in Lua patterns that captures the position of the match.
+    local colons_gmatch = string.gmatch(display_string, "():")
+    local first_colon_idx = colons_gmatch()
+    local second_colon_idx = colons_gmatch()
+    local third_colon_idx = colons_gmatch()
+    local path = string.sub(display_string, 1, first_colon_idx)
+    local path_last_slash_idx = string.find(path, "/[^/]*$") or 0
+
+    return display_string, {
+      { { 0, path_last_slash_idx}, "TelescopeResultsComment"},
+      { { first_colon_idx, second_colon_idx }, "TelescopeResultsSpecialComment"},
+      { { second_colon_idx, third_colon_idx }, "TelescopeResultsComment"},
+    }
   end
 
   local get_filename = get_filename_fn()

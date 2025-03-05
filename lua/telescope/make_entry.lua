@@ -481,16 +481,23 @@ function make_entry.gen_from_quickfix(opts)
       display_string = display_string .. ":" .. text
     end
 
+    local display, hl_group, icon = utils.transform_devicons(
+      entry.filename,
+      string.format(display_string, display_filename, coordinates, entry.text),
+      disable_devicons
+    )
+
     -- The pattern () is a special feature in Lua patterns that captures the position of the match.
     local colons_gmatch = string.gmatch(display_string, "():")
     local first_colon_idx = colons_gmatch()
     local second_colon_idx = colons_gmatch()
     local third_colon_idx = colons_gmatch()
-    local path = string.sub(display_string, 1, first_colon_idx)
+    local path = string.sub(display, #icon+2, first_colon_idx)
     local path_last_slash_idx = string.find(path, "/[^/]*$") or 0
 
-    return display_string, {
-      { { 0, path_last_slash_idx}, "TelescopeResultsComment"},
+    return display, {
+      { { 0, #icon }, hl_group },
+      { { #icon +1, #icon + 1 + path_last_slash_idx}, "TelescopeResultsComment"},
       { { first_colon_idx, second_colon_idx }, "TelescopeResultsSpecialComment"},
       { { second_colon_idx, third_colon_idx }, "TelescopeResultsComment"},
     }

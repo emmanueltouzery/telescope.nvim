@@ -235,6 +235,10 @@ local function list_or_jump(action, title, funname, params, opts)
     items = apply_action_handler(action, items, opts)
     items = filter_file_ignore_patters(items, opts)
 
+    if opts.post_process_results then
+      items = opts.post_process_results(items)
+    end
+
     if vim.tbl_isempty(items) then
       utils.notify(funname, {
         msg = string.format("No %s found", title),

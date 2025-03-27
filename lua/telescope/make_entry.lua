@@ -473,7 +473,20 @@ function make_entry.gen_from_quickfix(opts)
       display_string = display_string .. ":" .. text
     end
 
-    return display_string, path_style
+    local display, hl_group, icon = utils.transform_devicons(
+      entry.filename,
+      string.format(display_string, display_filename, coordinates, entry.text),
+      opts.disable_devicons
+    )
+
+    -- return display_string, path_style
+    if hl_group then
+      local style = { { { 0, #icon }, hl_group } }
+      style = utils.merge_styles(style, path_style, #icon + 1)
+      return display, style
+    else
+      return display, path_style
+    end
   end
 
   local get_filename = get_filename_fn()

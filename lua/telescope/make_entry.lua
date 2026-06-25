@@ -278,7 +278,7 @@ do
 
     local execute_keys = {
       path = function(t)
-        if fn.isabsolutepath(t.filename) then
+        if fn.isabsolutepath(t.filename) == 1 then
           return t.filename, false
         else
           return fs.abspath(fs.joinpath(t.cwd, t.filename)), false

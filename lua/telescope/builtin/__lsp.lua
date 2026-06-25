@@ -237,6 +237,7 @@ local function list_or_jump(action, title, funname, params, opts)
       end
 
       lsp.util.show_document(item.user_data, first_encoding, { reuse_win = opts.reuse_win })
+      vim.cmd("norm! zz")
     else
       pickers
         .new(opts, {
